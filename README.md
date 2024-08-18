@@ -1,6 +1,6 @@
 # 修改说明
 
-- 添加了中文分词器 ChineseRecursiveTextSplitter, 位于./helpers/chinese_character_spilitter.py 中
+- 添加了中文文本切分器 ChineseRecursiveTextSplitter, 位于./helpers/chinese_character_spilitter.py 中
 - 添加了中文测试数据, 是一段从深度学习相关书籍中的截取很短的文本
 - 修改了 extract_graph.ipynb 笔记本中相应位置的分词器为中文分词器, 数据文件夹(data_dir, 位于第一个单元格)为 deep_learning
 
