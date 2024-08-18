@@ -21,7 +21,22 @@ def extractConcepts(prompt: str, metadata={}, model="mistral-openorca:latest"):
         "   }, \n"
         "{ }, \n"
         "]\n"
-    )
+    );
+    SYS_PROMPT_CHINESE = (
+        "你的任务是提取在给定上下文中提到的关键概念（和非个人实体）。 "
+        "只提取最重要的原子概念，如果需要，将概念分解为更简单的概念。" 
+        "将概念分类为以下类别之一：" 
+        "[事件、概念、地点、对象、文件、组织、条件、杂项]\n" 
+        "使用以下格式将输出格式化为 json 列表：\n"
+         "[\n"
+         "  {\n"
+         '      "entity": 概念，\n'
+         '      "importance"：概念的上下文重要性，等级为 1 到 5(5 为最高),\n'
+         '      "category"：概念的类型，\n'
+         "  }, \n"
+         "{ }, \n" 
+         "] \n"
+    );
     response, _ = client.generate(model_name=model, system=SYS_PROMPT, prompt=prompt)
     try:
         result = json.loads(response)
@@ -60,7 +75,28 @@ def graphPrompt(input: str, metadata={}, model="mistral-openorca:latest"):
         '       "edge": "relationship between the two concepts, node_1 and node_2 in one or two sentences"\n'
         "   }, {...}\n"
         "]"
-    )
+    );
+    SYS_PROMPT_CHINESE = (
+        "您是一位网络图制作者，可以从给定的上下文中提取术语及其关系。"
+        "您将获得一个上下文块（以 ``` 分隔），您的任务是提取给定上下文中提到的术语的本体。这些术语应根据上下文代表关键概念。\n"
+        "想法 1:在遍历每个句子时，思考其中提到的关键术语。\n"
+            "\t术语可能包括对象、实体、位置、组织、人员、\n"
+            "\t条件、首字母缩略词、文档、服务、概念等。\n"
+            "\t术语应尽可能原子化\n\n"
+        "想法 2:思考这些术语如何与其他术语具有一对一的关系。\n"
+            "\t在同一个句子或同一个段落中提到的术语通常彼此相关。\n"
+            "\t术语可以与许多其他术语相关\n\n"
+        "想法 3:找出每个相关对之间的关​​系术语。\n\n"
+        "将输出格式化为 JSON 列表。列表中的每个元素包含一对术语"
+        "以及它们之间的关系，如下所示：\n"
+        "[\n"
+        "   {\n"
+        '       "node_1": "从提取的本体中的概念",\n'
+        '       "node_2": "从提取的本体中相关的概念",\n'
+        '       "edge": "一两句话中两个概念 node_1 和 node_2 之间的关系"\n'
+        "   }\n"
+        "]"
+    );
 
     USER_PROMPT = f"context: ```{input}``` \n\n output: "
     response, _ = client.generate(model_name=model, system=SYS_PROMPT, prompt=USER_PROMPT)
